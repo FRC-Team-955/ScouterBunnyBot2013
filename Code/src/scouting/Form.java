@@ -180,6 +180,9 @@ public class Form extends javax.swing.JFrame
     {
         int response = showOptionBox("Team Color", "What color is your Alliance?", "Red", "Blue");
         
+        checkRedAlliance.setForeground(Color.red);
+        checkBlueAlliance.setForeground(Color.blue);
+        
         if(response == 0)
             setColor(Config.red);
         
@@ -335,7 +338,7 @@ public class Form extends javax.swing.JFrame
         );
 
         checkRedAlliance.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        checkRedAlliance.setForeground(new java.awt.Color(255, 0, 0));
+        checkRedAlliance.setForeground(new java.awt.Color(222, 0, 0));
         checkRedAlliance.setText("Red Alliance");
         checkRedAlliance.addActionListener(new java.awt.event.ActionListener()
         {
@@ -586,7 +589,7 @@ public class Form extends javax.swing.JFrame
         );
 
         checkBlueAlliance.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        checkBlueAlliance.setForeground(new java.awt.Color(0, 0, 255));
+        checkBlueAlliance.setForeground(new java.awt.Color(0, 0, 222));
         checkBlueAlliance.setText("Blue Alliance");
         checkBlueAlliance.addActionListener(new java.awt.event.ActionListener()
         {
@@ -614,12 +617,11 @@ public class Form extends javax.swing.JFrame
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(panelScore, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                        .addComponent(panelScore, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(151, 151, 151)
-                        .addComponent(btSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33)))
+                        .addComponent(btSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panelBots, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(18, Short.MAX_VALUE))
         );

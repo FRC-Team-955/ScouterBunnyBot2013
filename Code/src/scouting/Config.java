@@ -14,7 +14,7 @@ import java.awt.Color;
  */
 public class Config
 {
-    static final Color blue = new Color(0, 0, 255);
-    static final Color red = new Color(255, 0, 0);
+    static final Color blue = new Color(0, 0, 222);
+    static final Color red = new Color(222, 0, 0);
     static final int amountOfBots = 3;
 }
