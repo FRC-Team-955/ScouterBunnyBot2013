@@ -349,7 +349,7 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="checkDefensive1">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Defensive ?"/>
+                <Property name="text" type="java.lang.String" value="Defensive?"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkDefensive1ActionPerformed"/>
@@ -427,7 +427,7 @@
           <SubComponents>
             <Component class="javax.swing.JCheckBox" name="checkDefensive3">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Defensive ?"/>
+                <Property name="text" type="java.lang.String" value="Defensive?"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkDefensive3ActionPerformed"/>
@@ -520,7 +520,7 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="checkDefensive2">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Defensive ?"/>
+                <Property name="text" type="java.lang.String" value="Defensive?"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkDefensive2ActionPerformed"/>

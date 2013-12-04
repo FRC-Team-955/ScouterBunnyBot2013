@@ -359,7 +359,7 @@ public class Form extends javax.swing.JFrame
 
         checkBroken1.setText("Broken?");
 
-        checkDefensive1.setText("Defensive ?");
+        checkDefensive1.setText("Defensive?");
         checkDefensive1.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -426,7 +426,7 @@ public class Form extends javax.swing.JFrame
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        checkDefensive3.setText("Defensive ?");
+        checkDefensive3.setText("Defensive?");
         checkDefensive3.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -497,7 +497,7 @@ public class Form extends javax.swing.JFrame
 
         checkBroken2.setText("Broken?");
 
-        checkDefensive2.setText("Defensive ?");
+        checkDefensive2.setText("Defensive?");
         checkDefensive2.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
