@@ -12,9 +12,8 @@ package scouting;
  */
 public class Bot
 {
-    private boolean m_penalized;
-    private boolean m_defensive;
-    private boolean m_broken;
+    private boolean m_bunnyCapable;
+    private boolean m_notFunctioning;
     private String m_number;
     private String m_comments;
     private int m_scoreTeleop;
@@ -27,28 +26,22 @@ public class Bot
     
     public void reset()
     {
-        m_penalized = false;
-        m_defensive = false;
-        m_broken = false;
+        m_bunnyCapable = false;
+        m_notFunctioning = false;
         m_number = "";
         m_comments = "";
         m_scoreTeleop = 0;
         m_scoreAuto = 0;
     }
     
-    public void setPenalized(boolean value)
+    public void setBunnyCapable(boolean value)
     {
-        m_penalized = value;
-    }
-    
-    public void setDefensive(boolean value)
-    {
-        m_defensive = value;
+        m_bunnyCapable = value;
     }
     
     public void setBroken(boolean value)
     {
-        m_broken = value;
+        m_notFunctioning = value;
     }
     
     public void setNumber(String value)
@@ -88,8 +81,8 @@ public class Bot
         data += m_scoreTeleop + ",";
         data += m_scoreAuto + ",";
         data += m_penalized + ",";
-        data += m_defensive + ",";
-        data += m_broken + ",";
+        data += m_bunnyCapable + ",";
+        data += m_notFunctioning + ",";
         data += m_comments;
         return data;
     }
