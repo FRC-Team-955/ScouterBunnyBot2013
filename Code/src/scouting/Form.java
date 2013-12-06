@@ -18,19 +18,14 @@ public class Form extends javax.swing.JFrame
     static FileWriter m_writer;
     
     // Keyboard Format: pocket
-    static char[] m_botKeys = {'a', 'g', 'l'};
+    
     
     // Data for bots starts ----------------------------------------------------
     static Bot[] m_bots = new Bot[Config.amountOfBots];
     
-    // Bot defensive, broken, penalized
-    JCheckBox[] m_checkPenalized;
-    JCheckBox[] m_checkBunnyCapable;
-    JCheckBox[] m_checkBroken;
-    
     // Team numbers, comments
     JTextField[] m_textTeam;
-    JTextField[] m_textComments;
+    JTextField[] m_textTags;
     
     /**
      * Creates new form Form
@@ -38,14 +33,28 @@ public class Form extends javax.swing.JFrame
     public Form() 
     {
         initComponents(); 
-        m_checkBunnyCapable = new JCheckBox[]{checkBunnyCapable1, checkBunnyCapable2, checkBunnyCapable3};
-        m_checkPenalized = new JCheckBox[]{checkNotFunctioning1, checkNotFunctioning2, checkNotFunctioning3};
         m_textTeam = new JTextField[]{textTeam1, textTeam2, textTeam3};
-        m_textComments = new JTextField[]{textComments1, textComments2, textComments3};
+        m_textTags = new JTextField[]{textTags1, textTags2, textTags3};
         resetData();
         initTeamColor();
+        writeBotDataFormat();
     }
         
+    public void writeBotDataFormat()
+    {
+        openFile(Config.botDataFormatFileName);
+        try
+        {    
+            m_writer.append(Config.botDataFormat);
+        }
+        
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        
+        closeFile();
+    }
     /**
      * Exports to .csv file.
      * @param directory
@@ -97,11 +106,8 @@ public class Form extends javax.swing.JFrame
     { 
         for(int index = 0; index < Config.amountOfBots; index++)
         {
-            m_checkPenalized[index].setSelected(false);
-            m_checkBunnyCapable[index].setSelected(false);
-            m_checkBroken[index].setSelected(false);
             m_textTeam[index].setText("Bot #" + (index + 1));
-            m_textComments[index].setText("");
+            m_textTags[index].setText("");
             m_bots[index] = new Bot();
         }
         
@@ -113,24 +119,21 @@ public class Form extends javax.swing.JFrame
     {
         for(int index = 0; index < Config.amountOfBots; index++)
         {
-            m_bots[index].setPenalized(m_checkPenalized[index].isSelected());
-            m_bots[index].setBunnyCapable(m_checkBunnyCapable[index].isSelected());
-            m_bots[index].setBroken(m_checkBroken[index].isSelected());
-            m_bots[index].setNumber(m_textTeam[index].getText());
-            m_bots[index].setComments(m_textComments[index].getText());
-        }   
+            m_bots[index].m_number = m_textTeam[index].getText();
+            m_bots[index].parseTags(m_textTags[index].getText());
+        }
         
         String scoreData = textScore.getText();
         
-        for(int botIndex = 0; botIndex < m_botKeys.length; botIndex++)
+        for(int botIndex = 0; botIndex < Config.botKeysTeleop.length; botIndex++)
         {
             for(int dataIndex = 0; dataIndex < scoreData.length(); dataIndex++)
             {    
-                if(m_botKeys[botIndex] == scoreData.charAt(dataIndex))
-                    m_bots[botIndex].setScoreTeleop(m_bots[botIndex].getScoreTeleop() + 1);
+                if(Config.botKeysTeleop[botIndex] == scoreData.charAt(dataIndex))  // Lowercase = teleop
+                    m_bots[botIndex].m_scoreTeleop++;
 
-                else if(Character.toUpperCase(m_botKeys[botIndex]) == scoreData.charAt(dataIndex))
-                    m_bots[botIndex].setScoreAuto(m_bots[botIndex].getScoreAuto() + 1);
+                else if(Config.botKeysAuto[botIndex] == scoreData.charAt(dataIndex))  // Uppercase = Autonomous
+                    m_bots[botIndex].m_scoreAuto++;
             }
         }      
         
@@ -141,10 +144,10 @@ public class Form extends javax.swing.JFrame
         
         catch(NumberFormatException e){}
         
-        String sMatchNumber = String.valueOf(m_matchNumber);
+        String matchNumber = String.valueOf(m_matchNumber);
         
         // Open file
-        openFile("Scouting Data/Match " + sMatchNumber  + m_color + ".csv");
+        openFile(Config.matchFileName + matchNumber  + m_color + ".csv");
         
         // Write data to files.
         for(int index = 0; index < Config.amountOfBots; index++)       
@@ -233,22 +236,16 @@ public class Form extends javax.swing.JFrame
         textMatchNumber = new javax.swing.JTextField();
         panelBots = new javax.swing.JPanel();
         panelBot1 = new javax.swing.JPanel();
-        checkNotFunctioning1 = new javax.swing.JCheckBox();
-        checkBunnyCapable1 = new javax.swing.JCheckBox();
-        textComments1 = new javax.swing.JTextField();
+        textTags1 = new javax.swing.JTextField();
         jLable4 = new javax.swing.JLabel();
         textTeam1 = new javax.swing.JTextField();
         panelBot2 = new javax.swing.JPanel();
-        checkBunnyCapable2 = new javax.swing.JCheckBox();
-        checkNotFunctioning2 = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
-        textComments2 = new javax.swing.JTextField();
+        textTags2 = new javax.swing.JTextField();
         textTeam2 = new javax.swing.JTextField();
         panelBot3 = new javax.swing.JPanel();
-        checkBunnyCapable3 = new javax.swing.JCheckBox();
-        checkNotFunctioning3 = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
-        textComments3 = new javax.swing.JTextField();
+        textTags3 = new javax.swing.JTextField();
         textTeam3 = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
@@ -259,10 +256,10 @@ public class Form extends javax.swing.JFrame
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        jLabel3 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTextArea3 = new javax.swing.JTextArea();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -309,7 +306,7 @@ public class Form extends javax.swing.JFrame
                 .addGroup(panelScoreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelScore, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         panelScoreLayout.setVerticalGroup(
             panelScoreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -353,29 +350,11 @@ public class Form extends javax.swing.JFrame
         panelBots.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         panelBots.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        checkNotFunctioning1.setText("Not Functioning?");
-        checkNotFunctioning1.addActionListener(new java.awt.event.ActionListener()
+        textTags1.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                checkNotFunctioning1ActionPerformed(evt);
-            }
-        });
-
-        checkBunnyCapable1.setText("Bunny Capable?");
-        checkBunnyCapable1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                checkBunnyCapable1ActionPerformed(evt);
-            }
-        });
-
-        textComments1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                textComments1ActionPerformed(evt);
+                textTags1ActionPerformed(evt);
             }
         });
 
@@ -398,57 +377,38 @@ public class Form extends javax.swing.JFrame
             panelBot1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBot1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelBot1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(checkNotFunctioning1)
-                    .addComponent(checkBunnyCapable1)
-                    .addComponent(textTeam1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(textTeam1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(44, 44, 44)
                 .addGroup(panelBot1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelBot1Layout.createSequentialGroup()
                         .addComponent(jLable4)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(textComments1))
+                        .addGap(0, 206, Short.MAX_VALUE))
+                    .addComponent(textTags1))
                 .addContainerGap())
         );
         panelBot1Layout.setVerticalGroup(
             panelBot1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBot1Layout.createSequentialGroup()
                 .addGroup(panelBot1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelBot1Layout.createSequentialGroup()
-                        .addComponent(textTeam1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(checkBunnyCapable1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(checkNotFunctioning1))
+                    .addComponent(textTeam1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelBot1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLable4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(textComments1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(textTags1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         panelBots.add(panelBot1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 11, 430, -1));
 
-        checkBunnyCapable2.setText("Bunny Capable?");
-        checkBunnyCapable2.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                checkBunnyCapable2ActionPerformed(evt);
-            }
-        });
-
-        checkNotFunctioning2.setText("Not Functioning?");
-
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel8.setText("Tags");
 
-        textComments2.addActionListener(new java.awt.event.ActionListener()
+        textTags2.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                textComments2ActionPerformed(evt);
+                textTags2ActionPerformed(evt);
             }
         });
 
@@ -468,16 +428,13 @@ public class Form extends javax.swing.JFrame
             panelBot2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBot2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelBot2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(checkBunnyCapable2)
-                    .addComponent(checkNotFunctioning2)
-                    .addComponent(textTeam2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(textTeam2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(44, 44, 44)
                 .addGroup(panelBot2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelBot2Layout.createSequentialGroup()
                         .addComponent(jLabel8)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(textComments2))
+                        .addGap(0, 206, Short.MAX_VALUE))
+                    .addComponent(textTags2))
                 .addContainerGap())
         );
         panelBot2Layout.setVerticalGroup(
@@ -487,37 +444,23 @@ public class Form extends javax.swing.JFrame
                     .addGroup(panelBot2Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(textComments2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(textTags2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelBot2Layout.createSequentialGroup()
                         .addComponent(textTeam2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(checkBunnyCapable2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(checkNotFunctioning2)))
+                        .addGap(56, 56, 56)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelBots.add(panelBot2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 430, -1));
 
-        checkBunnyCapable3.setText("Bunny Capable?");
-        checkBunnyCapable3.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                checkBunnyCapable3ActionPerformed(evt);
-            }
-        });
-
-        checkNotFunctioning3.setText("Not Functioning?");
-
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel9.setText("Tags");
 
-        textComments3.addActionListener(new java.awt.event.ActionListener()
+        textTags3.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                textComments3ActionPerformed(evt);
+                textTags3ActionPerformed(evt);
             }
         });
 
@@ -537,16 +480,13 @@ public class Form extends javax.swing.JFrame
             panelBot3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBot3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelBot3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textTeam3, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(checkBunnyCapable3)
-                    .addComponent(checkNotFunctioning3))
+                .addComponent(textTeam3, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(46, 46, 46)
                 .addGroup(panelBot3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelBot3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addGap(0, 204, Short.MAX_VALUE))
-                    .addComponent(textComments3))
+                    .addComponent(textTags3))
                 .addContainerGap())
         );
         panelBot3Layout.setVerticalGroup(
@@ -556,13 +496,10 @@ public class Form extends javax.swing.JFrame
                     .addGroup(panelBot3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(textComments3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(textTags3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelBot3Layout.createSequentialGroup()
                         .addComponent(textTeam3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(checkBunnyCapable3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(checkNotFunctioning3)))
+                        .addGap(56, 56, 56)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -623,20 +560,22 @@ public class Form extends javax.swing.JFrame
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jTextArea1.setText("1: Offensive Strategy\n2: Herds Balls\n3: Can pick up balls\n4: Selective of goal color");
+        jTextArea1.setText("Tags\n\n1: Defensive Strategy\n2: Herds Balls\n3: Can pick up balls\n4: Selective of goal color\n5: Not functioning");
+        jTextArea1.setWrapStyleWord(true);
+        jTextArea1.setAutoscrolls(false);
         jScrollPane1.setViewportView(jTextArea1);
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel2.setText("Tags");
 
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
-        jTextArea2.setText("a: Bot 1 scored ball in tele\ng: Bot 2 scored ball\nl: Bot 3 scored ball\nA: Bot 1 scored ball\nG: Bot 2 scored ball\nL: Bot 3 scored ball");
+        jTextArea2.setText("Teleop\n\na: Bot 1 scored \ng: Bot 2 scored\nl: Bot 3 scored");
         jScrollPane3.setViewportView(jTextArea2);
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel3.setText("Tags");
+        jTextArea3.setEditable(false);
+        jTextArea3.setColumns(20);
+        jTextArea3.setRows(5);
+        jTextArea3.setText("Autonomous\n\nA: Bot 1 scored \nG: Bot 2 scored\nL: Bot 3 scored");
+        jScrollPane4.setViewportView(jTextArea3);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -647,31 +586,28 @@ public class Form extends javax.swing.JFrame
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addGap(39, 39, 39))))
+                            .addComponent(jScrollPane3)
+                            .addComponent(jScrollPane4))))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+                .addGap(11, 11, 11)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -690,9 +626,9 @@ public class Form extends javax.swing.JFrame
                         .addGap(69, 69, 69))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(panelScore, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panelScore, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(panelBots, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -717,25 +653,13 @@ public class Form extends javax.swing.JFrame
                         .addComponent(btSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelScore, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(58, 58, 58)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(23, 23, 23))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void checkBunnyCapable1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBunnyCapable1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_checkBunnyCapable1ActionPerformed
-
-    private void checkBunnyCapable2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBunnyCapable2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_checkBunnyCapable2ActionPerformed
-
-    private void checkBunnyCapable3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBunnyCapable3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_checkBunnyCapable3ActionPerformed
 
     private void btSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSubmitActionPerformed
         // TODO add your handling code here:
@@ -769,24 +693,20 @@ public class Form extends javax.swing.JFrame
             setColor(Config.red);
     }//GEN-LAST:event_checkRedAllianceActionPerformed
 
-    private void checkNotFunctioning1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkNotFunctioning1ActionPerformed
+    private void textTags1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_textTags1ActionPerformed
+    {//GEN-HEADEREND:event_textTags1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_checkNotFunctioning1ActionPerformed
+    }//GEN-LAST:event_textTags1ActionPerformed
 
-    private void textComments1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_textComments1ActionPerformed
-    {//GEN-HEADEREND:event_textComments1ActionPerformed
+    private void textTags2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_textTags2ActionPerformed
+    {//GEN-HEADEREND:event_textTags2ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textComments1ActionPerformed
+    }//GEN-LAST:event_textTags2ActionPerformed
 
-    private void textComments2ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_textComments2ActionPerformed
-    {//GEN-HEADEREND:event_textComments2ActionPerformed
+    private void textTags3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_textTags3ActionPerformed
+    {//GEN-HEADEREND:event_textTags3ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textComments2ActionPerformed
-
-    private void textComments3ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_textComments3ActionPerformed
-    {//GEN-HEADEREND:event_textComments3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_textComments3ActionPerformed
+    }//GEN-LAST:event_textTags3ActionPerformed
 
     private void checkBlueAllianceActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_checkBlueAllianceActionPerformed
     {//GEN-HEADEREND:event_checkBlueAllianceActionPerformed
@@ -845,17 +765,9 @@ public class Form extends javax.swing.JFrame
     private javax.swing.ButtonGroup buttonGroup8;
     private javax.swing.ButtonGroup buttonGroup9;
     private javax.swing.JCheckBox checkBlueAlliance;
-    private javax.swing.JCheckBox checkBunnyCapable1;
-    private javax.swing.JCheckBox checkBunnyCapable2;
-    private javax.swing.JCheckBox checkBunnyCapable3;
-    private javax.swing.JCheckBox checkNotFunctioning1;
-    private javax.swing.JCheckBox checkNotFunctioning2;
-    private javax.swing.JCheckBox checkNotFunctioning3;
     private javax.swing.JCheckBox checkRedAlliance;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLable4;
@@ -865,10 +777,12 @@ public class Form extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextArea3;
     private javax.swing.JLabel labelMatchNumber;
     private javax.swing.JLabel labelScore;
     private javax.swing.JLabel labelTitle;
@@ -878,11 +792,11 @@ public class Form extends javax.swing.JFrame
     private javax.swing.JPanel panelBots;
     private javax.swing.JPanel panelScore;
     private javax.swing.JPanel panelScore1;
-    private javax.swing.JTextField textComments1;
-    private javax.swing.JTextField textComments2;
-    private javax.swing.JTextField textComments3;
     private javax.swing.JTextField textMatchNumber;
     private javax.swing.JTextArea textScore;
+    private javax.swing.JTextField textTags1;
+    private javax.swing.JTextField textTags2;
+    private javax.swing.JTextField textTags3;
     private javax.swing.JTextField textTeam1;
     private javax.swing.JTextField textTeam2;
     private javax.swing.JTextField textTeam3;
