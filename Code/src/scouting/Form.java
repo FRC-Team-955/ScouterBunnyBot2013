@@ -13,19 +13,12 @@ import java.io.FileWriter;
  */
 public class Form extends javax.swing.JFrame 
 {
-    static int m_matchNumber = 0;
-    static String m_color = "blue";
-    static FileWriter m_writer;
-    
-    // Keyboard Format: pocket
-    
-    
-    // Data for bots starts ----------------------------------------------------
-    static Bot[] m_bots = new Bot[Config.amountOfBots];
-    
-    // Team numbers, comments
-    JTextField[] m_textTeam;
-    JTextField[] m_textTags;
+    private int m_matchNumber = 0;
+    private String m_color = "blue";
+    private FileWriter m_writer;
+    private Bot[] m_bots = new Bot[Config.amountOfBots];
+    private JTextField[] m_textTeam;
+    private JTextField[] m_textTags;
     
     /**
      * Creates new form Form
@@ -59,7 +52,7 @@ public class Form extends javax.swing.JFrame
      * Exports to .csv file.
      * @param directory
      */
-     public static void openFile(String directory)
+     public void openFile(String directory)
      {
         try
         {
@@ -74,7 +67,7 @@ public class Form extends javax.swing.JFrame
         }
     }
      
-    public static void writeBotData(String botData)
+    public void writeBotData(String botData)
     {  
         try
         {
@@ -89,7 +82,7 @@ public class Form extends javax.swing.JFrame
         } 
     }
      
-    public static void closeFile()
+    public void closeFile()
     {
         try
         {
@@ -173,9 +166,8 @@ public class Form extends javax.swing.JFrame
             checkBlueAlliance.setSelected(false);
         }
         
-        textTeam1.setForeground(color);
-        textTeam2.setForeground(color);
-        textTeam3.setForeground(color);
+        for(int i = 0; i < Config.amountOfBots; i++)
+            m_textTeam[i].setForeground(color);
     }
     
     public void initTeamColor()
@@ -191,6 +183,7 @@ public class Form extends javax.swing.JFrame
         else
             setColor(Config.blue);
     }
+    
     public int showOptionBox(String title, String question, String box1, String box2)
     {
         Object[] options = {box1, box2};
