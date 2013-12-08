@@ -22,5 +22,5 @@ public class Config
     static final char[] tagKeys = {'1', '2', '3', '4', '5', '6'};
     static final String matchFileName = "Scouting Data/Match ";
     static final String botDataFormatFileName = "Scouting Data/Data Format.csv";
-    static final String botDataFormat = "Team Number,Teleop,Auto,Defensive,Herds,Picks Up,Selective Scoring,Not Functioning";
+    static final String botDataFormat = "Team Number,Teleop,Auto,Defensive,Herds,Picks Up,Selective Scoring,Not Functioning,";
 }
